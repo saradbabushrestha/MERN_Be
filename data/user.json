@@ -1,0 +1,13 @@
+{
+  "email": "test@test.com",
+  "username": "sarad",
+  "fullname": "Sarad Shrestha",
+  "title": "Software Developer",
+  "skills": ["JS", "PHP", "JAVA"],
+  "address": "Kathmandu,Nepal",
+  "job_type": "Full Time",
+  "id": 1,
+  "is_active": true,
+  "follower": ["username123", "usernamme234", "username543"],
+  "following": ["username123", "usernamme234", "username543", "user555"]
+}
