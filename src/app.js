@@ -17,7 +17,11 @@ app.get("/api/v1/posts", (req,res) =>{
     const posts = fs.readFileSync("./data/posts.json","utf-8").toString();
     res.status(200).send(posts);
 });
-
+//send and read data of user.json
+app.get("/api/v1/user", (req, res) => {
+    const user = fs.readFileSync("./data/user.json", "utf-8").toString();
+    res.status(200).send(user);
+  });
 
 
 app.listen(PORT, () => {

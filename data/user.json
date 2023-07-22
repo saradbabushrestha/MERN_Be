@@ -8,6 +8,6 @@
   "job_type": "Full Time",
   "id": 1,
   "is_active": true,
-  "follower": ["username123", "usernamme234", "username543"],
+  "follower": ["username123", "usernamme234", "username543","user555"],
   "following": ["username123", "usernamme234", "username543", "user555"]
 }
