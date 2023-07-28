@@ -52,8 +52,95 @@ User.create({
   is_active: true,
   follower: ["username123", "usernamme234", "username543", "user555"],
   following: ["username123", "usernamme234", "username543", "user555"],
-}).then(()=>{
-    console.log("User created");
+}).then(() => {
+  console.log("User created");
+});
+
+//for post
+const mongodbURIposts = "mongodb://localhost:27017/lec";
+mongoose.connect(mongodbURI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+const userSchemaposts = new mongoose.Schema({
+  title: String,
+  description: String,
+  location: String,
+  job_type: String,
+  pay_rate_per_hr_dollar: Number,
+  skills: [{ type: String }],
+  liked_by: [{ type: String }],
+  viewed_by: [{ type: String }],
+  id: Number,
+  user_id: Number,
+  post_by_username: String,
+  post_by_fullname: String,
+  post_date: Number,
+  comments: [{ type: String }],
+});
+
+const posts = mongoose.model("posts", userSchema);
+
+User.createCollection()
+  .then((col) => {
+    console.log("Collection", col, "created");
+  })
+
+  .catch((err) => {
+    console.log(err);
+  });
+
+User.create(
+  {
+    title: "PHP Developer Required",
+    description: "For a client project PHP Developer is required",
+    location: "Kathmandu",
+    job_type: "Full Time",
+    pay_rate_per_hr_dollar: 10.0,
+    skills: ["PHP", "JS", "HTML"],
+    liked_by: ["test111", "test1", "test123"],
+    viewed_by: ["test111", "test1", "test123"],
+    id: 2,
+    user_id: 1,
+    post_by_username: "test123",
+    post_by_fullname: "Test User",
+    post_date: "2023-06-10T09:24:07.659034",
+    comments: [],
+  },
+  {
+    title: "Js Developer Required",
+    description: "For a client project PHP Developer is required",
+    location: "Lalitpur",
+    job_type: "Full Time",
+    pay_rate_per_hr_dollar: 10.0,
+    skills: ["PHP", "JS", "HTML"],
+    liked_by: ["test111", "test1", "test123"],
+    viewed_by: ["test111", "test1", "test123"],
+    id: 3,
+    user_id: 2,
+    post_by_username: "test321",
+    post_by_fullname: "Test User2",
+    post_date: "2023-06-10T21:51:10.643105",
+    comments: [],
+  },
+  {
+    title: "Wordpress Developer Required",
+    description: "For a client project PHP Developer is required",
+    location: "Bhaktapur",
+    job_type: "Full Time",
+    pay_rate_per_hr_dollar: 10.0,
+    skills: ["PHP", "JS", "HTML"],
+    liked_by: ["test111", "test1", "test123"],
+    viewed_by: ["test111", "test1", "test123"],
+    id: 4,
+    user_id: 3,
+    post_by_username: "test111",
+    post_by_fullname: "Test User2",
+    post_date: "2023-06-10T21:53:40.698655",
+    comments: [],
+  }
+).then(() => {
+  console.log("User created");
 });
 
 //http://localhost:5000 or  http://localhost:5000/
