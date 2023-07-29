@@ -57,40 +57,41 @@ User.create({
 });
 
 //for post
-const mongodbURIposts = "mongodb://localhost:27017/lec";
-mongoose.connect(mongodbURI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-const userSchemaposts = new mongoose.Schema({
-  title: String,
-  description: String,
-  location: String,
-  job_type: String,
-  pay_rate_per_hr_dollar: Number,
-  skills: [{ type: String }],
-  liked_by: [{ type: String }],
-  viewed_by: [{ type: String }],
-  id: Number,
-  user_id: Number,
-  post_by_username: String,
-  post_by_fullname: String,
-  post_date: Number,
-  comments: [{ type: String }],
-});
+const postSchema = new mongoose.Schema([
+  {
+    title: String,
+    description: String,
+    location: String,
+    job_type: String,
+    pay_rate_per_hr_dollar: Number,
+    skills: [{ type: String }],
+    liked_by: [{ type: String }],
+    viewed_by: [{ type: String }],
+    id: Number,
+    user_id: Number,
+    post_by_username: String,
+    post_by_fullname: String,
+    post_date: String,
+    comments: [{ type: String }],
+  },
+]);
 
-const posts = mongoose.model("posts", userSchema);
 
-User.createCollection()
+
+
+const Post = mongoose.model("post", postSchema);
+Post.createCollection()
   .then((col) => {
-    console.log("Collection", col, "created");
+    console.log("collection", col, "created");
   })
-
   .catch((err) => {
     console.log(err);
   });
 
-User.create(
+
+
+
+Post.create([
   {
     title: "PHP Developer Required",
     description: "For a client project PHP Developer is required",
@@ -108,9 +109,9 @@ User.create(
     comments: [],
   },
   {
-    title: "Js Developer Required",
+    title: "PHP Developer Required",
     description: "For a client project PHP Developer is required",
-    location: "Lalitpur",
+    location: "Kathmandu",
     job_type: "Full Time",
     pay_rate_per_hr_dollar: 10.0,
     skills: ["PHP", "JS", "HTML"],
@@ -124,9 +125,9 @@ User.create(
     comments: [],
   },
   {
-    title: "Wordpress Developer Required",
+    title: "PHP Developer Required",
     description: "For a client project PHP Developer is required",
-    location: "Bhaktapur",
+    location: "Kathmandu",
     job_type: "Full Time",
     pay_rate_per_hr_dollar: 10.0,
     skills: ["PHP", "JS", "HTML"],
@@ -138,10 +139,9 @@ User.create(
     post_by_fullname: "Test User2",
     post_date: "2023-06-10T21:53:40.698655",
     comments: [],
-  }
-).then(() => {
-  console.log("User created");
-});
+  },
+]);
+
 
 //http://localhost:5000 or  http://localhost:5000/
 app.get("/", (req, res) => {
