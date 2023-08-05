@@ -1,20 +1,18 @@
 const express = require("express");
 const fs = require("fs");
 const cors = require("cors");
-
 const mongoose = require("mongoose");
 
 const app = express();
-
+const PORT = 5001;
 app.use(cors());
 
-const PORT = 5001;
-//connection string
-const mongodbURI = "mongodb://localhost:27017/lec";
-mongoose.connect(mongodbURI, {
+const mongoDbURI = "mongodb://127.0.0.1:27017/lec";
+mongoose.connect(mongoDbURI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
+
 const userSchema = new mongoose.Schema({
   email: String,
   username: String,
@@ -25,24 +23,25 @@ const userSchema = new mongoose.Schema({
   job_type: String,
   id: Number,
   is_active: Boolean,
-  follower: [{ type: String }],
-  following: [{ type: String }],
+  followers: [{ type: String }],
+  followings: [{ type: String }],
 });
 
 const User = mongoose.model("user", userSchema);
 
-User.createCollection()
-  .then((col) => {
-    console.log("Collection", col, "created");
-  })
+// not needed 
+// User.createCollection()
+//   .then((col) => {
+//     console.log("collection", col, "created");
+//   })
+//   .catch((err) => {
+//     console.log(err);
+//   });
 
-  .catch((err) => {
-    console.log(err);
-  });
 
 
 
-//for post
+
 const postSchema = new mongoose.Schema([
   {
     title: String,
@@ -132,45 +131,50 @@ Post.createCollection()
 
 
 
-//http://localhost:5000 or  http://localhost:5000/
 app.get("/", (req, res) => {
   res.status(200).send("This is response from BE");
 });
-//read file and send content pf file as response
+
+// read file and send content of file as response
 app.get("/api/v1/posts", (req, res) => {
-  const posts = fs.readFileSync("./data/posts.json", "utf-8").toString();
+  const posts = fs.readFileSync("./data/post.json", "utf-8").toString();
   res.status(200).send(posts);
 });
-//send and read data of user.json
+
+
 app.get("/api/v1/user", async (req, res) => {
-  const user = await User.find({id:1});  //return array
-  //const user = fs.readFileSync("./data/user.json", "utf-8").toString();
+  const user = await User.find({id:1});  // returns an array
+  // const user = fs.readFileSync("./data/user.json", "utf-8").toString();
   res.status(200).send(user[0]);
 });
 
+app.post("/api/v1/user", async (req ,resp )=> {
+  const lastUser = await User.findOne({},null ,
+    {sort : {id : -1}}) ;
 
-app.post("/api/v1/user",async (req,res) => {
-  const id= req.query.id;
+  let id = 1;
+  if (lastUser) {
+    id = lastUser.id + 1;
+  }
   const newUser ={
-    
-  email: "test@test.com",
-  username: "sarad",
-  fullname: "Sarad Shrestha",
-  title: "Software Developer",
-  skills: ["JS", "PHP", "JAVA"],
-  address: "Kathmandu,Nepal",
-  job_type: "Full Time",
-  id: id,
-  is_active: true,
-  follower: [],
-  following: [],
-
+    email: "test@test.com",
+    username: "Sarad",
+    fullname: "Sarad Shrestha",
+    title: "Software Developer",
+    skills: ["J5", "PHP", "JAVA"],
+    address: "Kathmandu,Nepal",
+    job_type: "Full Time",
+    id: id,
+    is_active: true,
+    followers: [],
+    followings: [],
   }
   User.create(newUser).then((createdUser) => {
-  console.log("User created");
-  res.status(200).send(createdUser);
-});
+    console.log("User created");
+    resp.status(200).send(createdUser);
+  });
 })
+
 app.listen(PORT, () => {
-  console.log("App is running on port" + PORT);
+  console.log("App is running on " + PORT);
 });
