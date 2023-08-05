@@ -2,10 +2,13 @@ const express = require("express");
 const fs = require("fs");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const bodyParser = require("body-parser")
 
 const app = express();
+app.use(bodyParser.json())
 const PORT = 5001;
 app.use(cors());
+
 
 const mongoDbURI = "mongodb://127.0.0.1:27017/lec";
 mongoose.connect(mongoDbURI, {
@@ -16,6 +19,7 @@ mongoose.connect(mongoDbURI, {
 const userSchema = new mongoose.Schema({
   email: String,
   username: String,
+  password: String,
   fullname: String,
   title: String,
   skills: [{ type: String }],
@@ -29,7 +33,7 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model("user", userSchema);
 
-// not needed 
+// not needed
 // User.createCollection()
 //   .then((col) => {
 //     console.log("collection", col, "created");
@@ -37,10 +41,6 @@ const User = mongoose.model("user", userSchema);
 //   .catch((err) => {
 //     console.log(err);
 //   });
-
-
-
-
 
 const postSchema = new mongoose.Schema([
   {
@@ -61,20 +61,7 @@ const postSchema = new mongoose.Schema([
   },
 ]);
 
-
-
-
 const Post = mongoose.model("post", postSchema);
-Post.createCollection()
-  .then((col) => {
-    console.log("collection", col, "created");
-  })
-  .catch((err) => {
-    console.log(err);
-  });
-
-
-
 
 // Post.create([
 //   {
@@ -127,10 +114,6 @@ Post.createCollection()
 //   },
 // ]);
 
-
-
-
-
 app.get("/", (req, res) => {
   res.status(200).send("This is response from BE");
 });
@@ -141,39 +124,48 @@ app.get("/api/v1/posts", (req, res) => {
   res.status(200).send(posts);
 });
 
-
 app.get("/api/v1/user", async (req, res) => {
-  const user = await User.find({id:1});  // returns an array
+  const user = await User.find({ id: 1 }); // returns an array
   // const user = fs.readFileSync("./data/user.json", "utf-8").toString();
   res.status(200).send(user[0]);
 });
 
-app.post("/api/v1/user", async (req ,resp )=> {
-  const lastUser = await User.findOne({},null ,
-    {sort : {id : -1}}) ;
+app.post("/api/v1/user", async (req, resp) => {
+  const lastUser = await User.findOne({}, null, { sort: { id: -1 } });
+  const {
+    username,
+    email,
+    fullname,
+    title,
+    job_type,
+    skills,
+    address,
+    password,
+  } = req.body;
 
   let id = 1;
   if (lastUser) {
     id = lastUser.id + 1;
   }
-  const newUser ={
-    email: "test@test.com",
-    username: "Sarad",
-    fullname: "Sarad Shrestha",
-    title: "Software Developer",
-    skills: ["J5", "PHP", "JAVA"],
-    address: "Kathmandu,Nepal",
-    job_type: "Full Time",
-    id: id,
+  const newUser = {
+    email,
+    password,
+    username,
+    fullname,
+    title,
+    skills,
+    address,
+    job_type,
+    id,
     is_active: true,
     followers: [],
     followings: [],
-  }
+  };
   User.create(newUser).then((createdUser) => {
     console.log("User created");
     resp.status(200).send(createdUser);
   });
-})
+});
 
 app.listen(PORT, () => {
   console.log("App is running on " + PORT);
